@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from functools import partial
+from functools import partial, wraps
 from hashlib import sha256
 import os
 import sys
@@ -139,7 +139,10 @@ def refresh(wrapped):
     """
     def wrapped_refresh(session, *arg, **kw):
         result = wrapped(session, *arg, **kw)
-        session.redis.expire(session.session_id, session.timeout)
+        if hasattr(session, '_no_update'):
+            del session._no_update
+        else:
+            session.redis.expire(session.session_id, session.timeout)
         return result
 
     return wrapped_refresh
@@ -158,3 +161,13 @@ def persist(wrapped):
         return result
 
     return wrapped_persist
+
+def no_update(view_callable):
+    """
+    Decorator to prevent updating session ttl
+    """
+    @wraps(view_callable)
+    def wrapped(context, request):
+        request.session._no_update = True
+        return view_callable(context, request)
+    return wrapped
