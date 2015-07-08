@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from functools import partial, wraps
+from functools import partial
 from hashlib import sha256
 import os
 import sys
@@ -161,13 +161,3 @@ def persist(wrapped):
         return result
 
     return wrapped_persist
-
-def no_update(view_callable):
-    """
-    Decorator to prevent updating session ttl
-    """
-    @wraps(view_callable)
-    def wrapped(context, request):
-        request.session._no_update = True
-        return view_callable(context, request)
-    return wrapped
