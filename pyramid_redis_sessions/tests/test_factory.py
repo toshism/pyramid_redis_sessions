@@ -111,7 +111,7 @@ class TestRedisSessionFactory(unittest.TestCase):
         # settings to get the expected header to compare against
         response_to_check_against = webob.Response()
         response_to_check_against.set_cookie(
-            key=cookie_name,
+            name=cookie_name,
             value=self._serialize(session_id=request.session.session_id,
                                   secret=secret),
             max_age=cookie_max_age,
@@ -158,7 +158,7 @@ class TestRedisSessionFactory(unittest.TestCase):
         # settings to get the expected header to compare against
         response_to_check_against = webob.Response()
         response_to_check_against.delete_cookie(
-            cookie_name,
+            name=cookie_name,
             path=cookie_path,
             domain=cookie_domain,
             )
