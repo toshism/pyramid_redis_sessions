@@ -139,7 +139,10 @@ def refresh(wrapped):
     """
     def wrapped_refresh(session, *arg, **kw):
         result = wrapped(session, *arg, **kw)
-        session.redis.expire(session.session_id, session.timeout)
+        if hasattr(session, '_no_update'):
+            del session._no_update
+        else:
+            session.redis.expire(session.session_id, session.timeout)
         return result
 
     return wrapped_refresh
