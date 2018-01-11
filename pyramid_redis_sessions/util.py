@@ -139,9 +139,7 @@ def refresh(wrapped):
     """
     def wrapped_refresh(session, *arg, **kw):
         result = wrapped(session, *arg, **kw)
-        if hasattr(session, '_no_update'):
-            del session._no_update
-        else:
+        if not hasattr(session, '_no_update'):
             session.redis.expire(session.session_id, session.timeout)
         return result
 
